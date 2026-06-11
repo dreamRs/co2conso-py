@@ -4,6 +4,4 @@ Ce tableau de bord permet de visualiser le jeu de données [Part des EnR et inte
 
 Il s'agit d'une version minimaliste du projet R disponible ici : [co2conso-r](https://github.com/dreamRs/co2conso-r).
 
-## Mise à jour
-
-Les données sont mises à jour automatiquement toutes les heures via GitHub Actions.
+lien : https://dreamrs.github.io/co2conso-py/
