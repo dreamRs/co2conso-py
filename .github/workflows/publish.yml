@@ -1,0 +1,48 @@
+name: Quarto Publish
+on:
+  workflow_dispatch:
+  push:
+    branches: main
+  schedule:
+    - cron: "0 * * * *"
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Fetch and save data
+        run: |
+          git pull --rebase origin main
+          python R/collect.py
+
+      - name: Commit updated parquet
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add inputs/donnees.parquet
+          git diff --staged --quiet || git commit -m "chore: update donnees.parquet [skip ci]"
+          git push
+
+      - name: Render and Publish
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: gh-pages
+          path: index.qmd
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,70 @@
+---
+title: "Intensité en émissions de GES de l'électricité consommée en France en temps réel"
+format: 
+  dashboard:
+    theme:
+      - cosmo
+      - assets/styles/custom.scss
+jupyter: python3
+---
+
+```{python}
+from helpers import *
+from collect import *
+```
+
+```{python}
+donnees = charger_donnees()
+donnees["date_heure_cet"] = donnees["date_heure_utc"].dt.tz_convert("Europe/Paris")
+now = max(donnees["date_heure_cet"])
+co2_now = donnees[donnees["date_heure_cet"] == now]["intensite_emissions_conso"].values[0]
+part_now = donnees[donnees["date_heure_cet"] == now]["part_enr_conso"].values[0]
+moyenne_part_enr = donnees[
+    (donnees["date_heure_cet"].dt.month == now.month) &
+    (donnees["date_heure_cet"].dt.year == now.year)]["part_enr_conso"].mean()
+co2_max30 = donnees[donnees["date_heure_cet"] >= now - pd.DateOffset(days=30)]["intensite_emissions_conso"].max()
+co2_min30 = donnees[donnees["date_heure_cet"] >= now - pd.DateOffset(days=30)]["intensite_emissions_conso"].min()
+```
+
+## Row {height=40%}
+
+### Column {width=50%}
+
+```{python}
+#| title: "Boxplot annuel de l'intensité en CO₂"
+boxplot_annuel(donnees)
+```
+
+### Column {width=25%}
+
+```{python}
+#| component: valuebox
+#| title: CO₂ temps réel (en gCO₂éq/kWh)
+dict(icon="lightning-charge-fill", color="primary", value=co2_now)
+```
+
+```{python}
+#| component: valuebox
+#| title: Min / Max CO₂ 30j (en gCO₂éq/kWh)
+dict(icon="arrow-down-up", color="#90CAF9", value=f"{co2_min30} / {co2_max30}")
+```
+
+### Column {width=25%}
+```{python}
+#| component: valuebox
+#| title: Part ENR temps réel
+dict(icon="wind", color="success", value=f"{part_now} %")
+```
+
+```{python}
+#| component: valuebox
+#| title: Moyenne du mois Part ENR
+dict(icon="leaf-fill", color="#81C784", value=f"{round(moyenne_part_enr, 1)} %")
+```
+
+## Row {height=60%}
+
+```{python}
+#| title: "Évolution de l'intensité en CO₂"
+courbe1(donnees)
+```
