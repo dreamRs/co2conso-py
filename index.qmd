@@ -66,5 +66,5 @@ dict(icon="leaf-fill", color="#81C784", value=f"{round(moyenne_part_enr, 1)} %")
 
 ```{python}
 #| title: "Évolution de l'intensité en CO₂"
-courbe1(donnees)
+courbe(donnees)
 ```

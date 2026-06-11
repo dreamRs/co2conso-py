@@ -4,3 +4,5 @@ venv/
 .venv/
 .ipynb_checkpoints/
 .DS_Store
+/.quarto/
+**/*.quarto_ipynb
