@@ -65,6 +65,6 @@ dict(icon="leaf-fill", color="#81C784", value=f"{moyenne_part_enr} %")
 ## Row {height=60%}
 
 ```{python}
-#| title: "Évolution de l'intensité en CO₂"
+#| title: "Évolution de l'intensité CO₂ et Part ENR"
 courbe(donnees)
 ```
