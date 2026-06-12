@@ -1,9 +1,0 @@
-[
-  {
-    "objectID": "dev/test.html",
-    "href": "dev/test.html",
-    "title": "Intensité GES électricité France",
-    "section": "",
-    "text": "import sys\nsys.path.insert(0, \"..\")\n\nimport importlib\nimport helpers\nimportlib.reload(helpers)\nfrom helpers import *\nfrom collect import *\n\ndf = charger_donnees()\ndf[\"date_heure_cet\"] = df[\"date_heure_utc\"].dt.tz_convert(\"Europe/Paris\")\nfig = courbe(df)\nfig.show()\n\nUnable to display output for mime type(s): application/vnd.plotly.v1+json"
-  }
-]
