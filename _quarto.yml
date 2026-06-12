@@ -4,3 +4,5 @@ project:
 
 website:
   title: "Intensité GES électricité France"
+
+jupyter: python3

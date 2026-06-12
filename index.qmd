@@ -17,13 +17,13 @@ from collect import *
 donnees = charger_donnees()
 donnees["date_heure_cet"] = donnees["date_heure_utc"].dt.tz_convert("Europe/Paris")
 now = max(donnees["date_heure_cet"])
-co2_now = donnees[donnees["date_heure_cet"] == now]["intensite_emissions_conso"].values[0]
-part_now = donnees[donnees["date_heure_cet"] == now]["part_enr_conso"].values[0]
-moyenne_part_enr = donnees[
+co2_now = int(donnees[donnees["date_heure_cet"] == now]["intensite_emissions_conso"].values[0])
+part_now = int(donnees[donnees["date_heure_cet"] == now]["part_enr_conso"].values[0])
+moyenne_part_enr = round(float(donnees[
     (donnees["date_heure_cet"].dt.month == now.month) &
-    (donnees["date_heure_cet"].dt.year == now.year)]["part_enr_conso"].mean()
-co2_max30 = donnees[donnees["date_heure_cet"] >= now - pd.DateOffset(days=30)]["intensite_emissions_conso"].max()
-co2_min30 = donnees[donnees["date_heure_cet"] >= now - pd.DateOffset(days=30)]["intensite_emissions_conso"].min()
+    (donnees["date_heure_cet"].dt.year == now.year)]["part_enr_conso"].mean()), 1)
+co2_max30 = int(donnees[donnees["date_heure_cet"] >= now - pd.DateOffset(days=30)]["intensite_emissions_conso"].max())
+co2_min30 = int(donnees[donnees["date_heure_cet"] >= now - pd.DateOffset(days=30)]["intensite_emissions_conso"].min())
 ```
 
 ## Row {height=40%}
@@ -59,7 +59,7 @@ dict(icon="wind", color="success", value=f"{part_now} %")
 ```{python}
 #| component: valuebox
 #| title: Moyenne du mois Part ENR
-dict(icon="leaf-fill", color="#81C784", value=f"{round(moyenne_part_enr, 1)} %")
+dict(icon="leaf-fill", color="#81C784", value=f"{moyenne_part_enr} %")
 ```
 
 ## Row {height=60%}

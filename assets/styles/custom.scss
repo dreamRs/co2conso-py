@@ -33,3 +33,10 @@ form.vega-bindings label {
   margin-top: auto;
   margin-bottom: 0.5rem;
 }
+
+.bslib-value-box .value-box-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.8rem;
+}

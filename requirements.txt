@@ -2,3 +2,6 @@ requests
 pandas
 pyarrow
 altair
+pyyaml
+jupyter
+numpy

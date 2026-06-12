@@ -7,6 +7,7 @@ alt.data_transformers.disable_max_rows()
 def courbe(donnees):
     now = max(donnees["date_heure_cet"])
     donnees = donnees[donnees["date_heure_cet"] >= now - pd.DateOffset(years=1)]
+    donnees = donnees.set_index("date_heure_cet").resample("6h").mean(numeric_only=True).reset_index()
     
     donnees_long = donnees.melt(
         id_vars=["date_heure_cet"],
