@@ -89,21 +89,21 @@ def courbe(donnees):
 def boxplot_annuel(donnees):
     donnees = donnees.copy()
     donnees["annee"] = donnees["date_heure_cet"].dt.year.astype(str)
-    
     chart = alt.Chart(donnees).mark_boxplot(
         color="#1565C0",
-        outliers=False
+        outliers=True
     ).encode(
         x=alt.X("annee:O", title="Année"),
-        y=alt.Y("intensite_emissions_conso:Q", 
-                title="Intensité des émissions (gCO₂éq/kWh)"),
+        y=alt.Y("intensite_emissions_conso:Q", title="Intensité des émissions (gCO₂éq/kWh)"),
         tooltip=[
-            alt.Tooltip("annee:O", title="Année"),
-            alt.Tooltip("intensite_emissions_conso:Q", title="Médiane", format=".1f")
+            alt.Tooltip("min(intensite_emissions_conso):Q", title="Minimum", format=".1f"),
+            alt.Tooltip("q1(intensite_emissions_conso):Q", title="1er quartile", format=".1f"),
+            alt.Tooltip("median(intensite_emissions_conso):Q", title="Médiane", format=".1f"),
+            alt.Tooltip("q3(intensite_emissions_conso):Q", title="3ème quartile", format=".1f"),
+            alt.Tooltip("max(intensite_emissions_conso):Q", title="Maximum", format=".1f"),
         ]
     ).properties(
         width="container",
         height="container"
     )
-    
     return chart
