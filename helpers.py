@@ -1,7 +1,5 @@
 import pandas as pd
 import altair as alt
-           
-
 alt.data_transformers.disable_max_rows()
 
 def courbe(donnees):
@@ -26,7 +24,6 @@ def courbe(donnees):
         "Intensité CO₂": "#1565C0",
         "Part ENR": "#2e7d32"
     })
-
     selection = alt.binding_radio(
         options=["Intensité CO₂", "Part ENR"],
         name=" "
@@ -42,7 +39,6 @@ def courbe(donnees):
         fields=["date_heure_cet"],
         empty=False
     )
-
     line = alt.Chart(donnees_long).mark_line(
         strokeWidth=1
     ).encode(
@@ -65,7 +61,6 @@ def courbe(donnees):
     ).transform_filter(
         alt.datum.metrique == param
     )
-
     points = line.mark_point(
         size=80
     ).encode(
@@ -75,7 +70,6 @@ def courbe(donnees):
             alt.Tooltip("valeur_str:N", title="Valeur")
         ]
     ).add_params(hover)
-
     rule = alt.Chart(donnees_long).mark_rule(
         color="gray",
         strokeWidth=1
@@ -85,7 +79,6 @@ def courbe(donnees):
     ).transform_filter(
         alt.datum.metrique == param
     )
-
     return (line + rule + points).add_params(param).properties(
         width="container",
         height="container"
@@ -95,28 +88,45 @@ def boxplot_annuel(donnees):
     donnees = donnees.copy()
     donnees["annee"] = donnees["date_heure_cet"].dt.year.astype(str)
 
-    chart = alt.Chart(donnees).mark_boxplot(
-        color="#1565C0",
+    donnees_long = donnees.melt(
+        id_vars=["annee"],
+        value_vars=["intensite_emissions_conso", "part_enr_conso"],
+        var_name="metrique",
+        value_name="valeur"
+    )
+    donnees_long["metrique"] = donnees_long["metrique"].replace({
+        "intensite_emissions_conso": "Intensité CO₂",
+        "part_enr_conso": "Part ENR"
+    })
+
+    selection = alt.binding_radio(
+        options=["Intensité CO₂", "Part ENR"],
+        name=" "
+    )
+    param = alt.param(
+        name="choix_box",
+        bind=selection,
+        value="Intensité CO₂"
+    )
+
+    chart = alt.Chart(donnees_long).mark_boxplot(
         outliers=False,
         size=30
     ).encode(
         x=alt.X("annee:O", title="Année"),
-        y=alt.Y(
-            "intensite_emissions_conso:Q",
-            title="Intensité des émissions (gCO₂éq/kWh)"
-        ),
-        tooltip=[
-            alt.Tooltip("annee:O", title="Année"),
-            alt.Tooltip(
-                "intensite_emissions_conso:Q",
-                title="Médiane",
-                format=".1f"
-            )
-        ]
-    ).properties(
+        y=alt.Y("valeur:Q", title=""),
+        color=alt.Color("metrique:N",
+            scale=alt.Scale(
+                domain=["Intensité CO₂", "Part ENR"],
+                range=["#1565C0", "#2e7d32"]
+            ),
+            legend=None
+        )
+    ).transform_filter(
+        alt.datum.metrique == param
+    ).add_params(param).properties(
         width="container",
         height="container"
     )
 
     return chart
-    
